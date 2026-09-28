@@ -1,0 +1,40 @@
+﻿# ==============================================================================
+# RANSOMWARE BEHAVIORAL TRACE SAMPLE (Crypto-Locker Loop)
+# ==============================================================================
+# This file represents a behavioral ransomware attack trace.
+# System calls show repeated directory enumeration (getdents), opening user files,
+# reading plain contents, writing encrypted blocks, renaming to .locked, and deleting (unlink) originals.
+# Expected detector output: RANSOMWARE ALERT (Score > 0.95, Alert: True, Process Containment Triggered)
+# ==============================================================================
+
+getdents64(3, /* 12 entries */, 32768) = 480
+openat(AT_FDCWD, "/home/user/documents/financial_report.xlsx", O_RDONLY) = 4
+read(4, "PK\3\4\24\0\6\0\10\0\0\0!\0...", 65536) = 65536
+openat(AT_FDCWD, "/home/user/documents/financial_report.xlsx.locked", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 5
+write(5, "\x89\x45\x21\x99\xa1\xfe\x42...", 65536) = 65536
+write(5, "\x12\x8f\xca\x01\x55\xbb\x88...", 1024) = 1024
+close(5) = 0
+close(4) = 0
+rename("/home/user/documents/financial_report.xlsx", "/home/user/documents/financial_report.xlsx.bak") = 0
+unlink("/home/user/documents/financial_report.xlsx.bak") = 0
+
+getdents64(3, /* 12 entries */, 32768) = 480
+openat(AT_FDCWD, "/home/user/documents/passwords.kdbx", O_RDONLY) = 4
+read(4, "\x03\xd9\xa2\x9a\x67\xfb\x4b...", 32768) = 32768
+openat(AT_FDCWD, "/home/user/documents/passwords.kdbx.locked", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 5
+write(5, "\xaa\xbc\xde\xf0\x12\x34\x56...", 32768) = 32768
+write(5, "\x99\x88\x77\x66\x55\x44\x33...", 512) = 512
+close(5) = 0
+close(4) = 0
+rename("/home/user/documents/passwords.kdbx", "/home/user/documents/passwords.kdbx.bak") = 0
+unlink("/home/user/documents/passwords.kdbx.bak") = 0
+
+getdents64(3, /* 12 entries */, 32768) = 480
+openat(AT_FDCWD, "/home/user/documents/tax_records_2025.pdf", O_RDONLY) = 4
+read(4, "%PDF-1.7\n%...", 45000) = 45000
+openat(AT_FDCWD, "/home/user/documents/tax_records_2025.pdf.locked", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 5
+write(5, "\x00\xff\xee\xdd\xcc\xbb\xaa...", 45000) = 45000
+close(5) = 0
+close(4) = 0
+rename("/home/user/documents/tax_records_2025.pdf", "/home/user/documents/tax_records_2025.pdf.bak") = 0
+unlink("/home/user/documents/tax_records_2025.pdf.bak") = 0

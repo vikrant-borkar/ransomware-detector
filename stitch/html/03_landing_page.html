@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Romer - Business Operations</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Manrope:wght@520;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#353436",
+                        "secondary": "#50d8e9",
+                        "surface-container": "#201f21",
+                        "on-tertiary-fixed": "#311300",
+                        "tertiary-container": "#e0731d",
+                        "error-container": "#93000a",
+                        "tertiary": "#ffb689",
+                        "surface": "#131314",
+                        "on-surface-variant": "#c6c5d8",
+                        "surface-bright": "#3a393a",
+                        "surface-tint": "#bec2ff",
+                        "tertiary-fixed-dim": "#ffb689",
+                        "surface-variant": "#353436",
+                        "secondary-container": "#00b1c2",
+                        "on-surface": "#e5e2e3",
+                        "on-primary-container": "#000992",
+                        "on-background": "#e5e2e3",
+                        "surface-container-high": "#2a2a2b",
+                        "primary-fixed": "#e0e0ff",
+                        "secondary-fixed-dim": "#50d8e9",
+                        "on-tertiary-fixed-variant": "#743500",
+                        "on-secondary-container": "#003e44",
+                        "outline-variant": "#454655",
+                        "on-primary-fixed-variant": "#1f2bc8",
+                        "on-secondary-fixed-variant": "#004f57",
+                        "on-primary-fixed": "#000469",
+                        "background": "#131314",
+                        "secondary-fixed": "#92f1ff",
+                        "surface-container-low": "#1c1b1d",
+                        "surface-dim": "#131314",
+                        "primary-fixed-dim": "#bec2ff",
+                        "inverse-on-surface": "#313031",
+                        "error": "#ffb4ab",
+                        "primary": "#bec2ff",
+                        "on-secondary": "#00363c",
+                        "inverse-primary": "#3d4ae0",
+                        "tertiary-fixed": "#ffdbc8",
+                        "primary-container": "#7a85ff",
+                        "on-tertiary": "#512300",
+                        "inverse-surface": "#e5e2e3",
+                        "surface-container-lowest": "#0e0e0f",
+                        "outline": "#8f8fa1",
+                        "on-tertiary-container": "#471e00",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001f23",
+                        "on-primary": "#000ba6",
+                        "on-error": "#690005",
+                        "brand-primary": "#5E6BFF",
+                        "brand-primary-hover": "#4a55cc",
+                        "brand-primary-text": "#F0F1F2",
+                        "brand-secondary-text": "#9A9DA3",
+                        "brand-border": "#1B1C1E",
+                        "brand-border-strong": "#232426",
+                        "brand-card-bg": "#101112",
+                        "brand-card-bg-alt": "#151617",
+                        "brand-input-bg": "#101112"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem",
+                        "button": "4px",
+                        "card": "4px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "gutter": "20px",
+                        "xs": "4px",
+                        "sm": "8px",
+                        "base": "4px",
+                        "xl": "40px",
+                        "lg": "24px",
+                        "margin-safe": "32px",
+                        "section-lg": "64px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Manrope", "sans-serif"],
+                        "mono-data": ["Inter", "monospace"],
+                        "body-md": ["Inter", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "h2": ["Manrope", "sans-serif"],
+                        "h4": ["Manrope", "sans-serif"],
+                        "h1": ["Manrope", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "h3": ["24px", { "lineHeight": "1.2", "letterSpacing": "-0.04em", "fontWeight": "520" }],
+                        "mono-data": ["13px", { "lineHeight": "1", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h2": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.05em", "fontWeight": "520" }],
+                        "h4": ["18px", { "lineHeight": "1.4", "letterSpacing": "-0.02em", "fontWeight": "520" }],
+                        "h1": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.05em", "fontWeight": "520" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "0em", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #070708; color: #e5e2e3; }
+        .glass-panel { background: rgba(16, 17, 18, 0.8); backdrop-filter: blur(20px); border: 1px solid #1B1C1E; }
+        .card-shimmer { position: relative; overflow: hidden; }
+        .card-shimmer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%); z-index: 10; }
+        .focus-glow:focus-within { border-color: #5E6BFF; box-shadow: 0 0 0 2px rgba(94, 107, 255, 0.2); }
+        .status-dot-active { width: 6px; height: 6px; border-radius: 50%; background-color: #22c55e; display: inline-block; }
+        .status-dot-critical { width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444; display: inline-block; }
+        .kpi-text { font-family: 'Manrope', sans-serif; font-weight: 520; font-size: 32px; letter-spacing: -0.05em; line-height: 1.2; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-brand-primary selection:text-white">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline-variant sticky top-0 z-50 h-20 w-full">
+<div class="flex justify-between items-center w-full px-margin-safe max-w-[1728px] mx-auto h-20">
+<!-- Brand -->
+<div class="flex items-center">
+<span class="font-h3 text-h3 font-bold tracking-tight text-on-surface dark:text-on-surface">Romer</span>
+</div>
+<!-- Navigation Links (Web) -->
+<nav class="hidden md:flex gap-gutter items-center">
+<a class="font-body-md text-body-md text-primary dark:text-primary border-b-2 border-primary pb-1 hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Platform</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Dashboards</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Customers</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Pricing</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Resources</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors duration-200" href="#">Contact</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-md">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Log in</a>
+<a class="bg-brand-primary text-brand-primary-text font-label-sm text-label-sm px-4 py-2 rounded-button hover:bg-brand-primary-hover transition-colors" href="#">Start free</a>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col">
+<!-- Hero Section -->
+<section class="w-full px-margin-safe max-w-[1728px] mx-auto pt-section-lg pb-xl flex flex-col items-center text-center">
+<h1 class="font-h1 text-h1 text-on-surface max-w-4xl mb-lg">The command dashboard for focused teams</h1>
+<p class="font-body-lg text-body-lg text-brand-secondary-text max-w-2xl mb-xl">Executive business operations designed for absolute control and clarity. See signals, share decisions, and maintain the operating rhythm.</p>
+<div class="flex gap-md mb-section-lg">
+<button class="bg-brand-primary text-brand-primary-text font-label-sm text-label-sm px-6 py-3 rounded-button hover:bg-brand-primary-hover transition-colors">Deploy Command Center</button>
+<button class="bg-transparent border border-brand-border-strong text-brand-primary-text font-label-sm text-label-sm px-6 py-3 rounded-button hover:bg-brand-card-bg transition-colors">View Platform Architecture</button>
+</div>
+<!-- Hero Mockup Container -->
+<div class="w-full relative glass-panel rounded-lg p-md card-shimmer"><!-- Technical Telemetry Interface -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 h-[600px] w-full relative overflow-hidden flex flex-col font-mono-data">
+<!-- Background Grid -->
+<div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#e5e2e3 0.5px, transparent 0.5px); background-size: 24px 24px;"></div>
+<!-- Header / Status Bar -->
+<div class="h-10 border-b border-outline-variant/20 flex items-center justify-between px-lg relative z-10">
+<div class="flex items-center gap-md">
+<span class="text-[10px] tracking-[0.2em] uppercase text-on-surface-variant">Core.Signal_Process</span>
+<div class="w-[1px] h-3 bg-outline-variant/30"></div>
+<span class="text-[10px] text-primary">ACTV // 0.0024s</span>
+</div>
+<div class="flex gap-xl text-[10px] text-on-surface-variant/60">
+<span>LAT: 51.5074 N</span>
+<span>LON: 0.1278 W</span>
+</div>
+</div>
+<!-- Main Visualization Area -->
+<div class="flex-grow relative flex items-center justify-center">
+<!-- Abstract Vector Visualization -->
+<svg class="w-full h-full max-h-[400px] opacity-40" fill="none" viewbox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+<path d="M50 350 Q 200 320 400 350 T 750 330" stroke="#bec2ff" stroke-width="0.5"></path>
+<path d="M50 340 Q 200 310 400 340 T 750 320" stroke="#bec2ff" stroke-dasharray="2 4" stroke-width="0.5"></path>
+<circle cx="400" cy="345" fill="#bec2ff" r="2"></circle>
+<line stroke="#bec2ff" stroke-dasharray="1 5" stroke-width="0.5" x1="400" x2="400" y1="345" y2="50"></line>
+<g opacity="0.5">
+<circle cx="100" cy="100" fill="white" r="0.5"></circle>
+<circle cx="150" cy="120" fill="white" r="0.5"></circle>
+<circle cx="200" cy="80" fill="white" r="0.5"></circle>
+<circle cx="600" cy="150" fill="white" r="0.5"></circle>
+<circle cx="700" cy="90" fill="white" r="0.5"></circle>
+</g>
+</svg>
+<!-- Precise Corner Data Points -->
+<div class="absolute top-lg left-lg flex flex-col gap-xs">
+<span class="text-[10px] text-on-surface-variant/40 uppercase tracking-widest">Input Velocity</span>
+<span class="text-h4 text-on-surface font-light">842.01 <span class="text-xs text-on-surface-variant/40">m/s</span></span>
+</div>
+<div class="absolute bottom-lg right-lg text-right flex flex-col gap-xs">
+<span class="text-[10px] text-on-surface-variant/40 uppercase tracking-widest">Node Consistency</span>
+<span class="text-h4 text-primary font-light">99.98%</span>
+</div>
+</div>
+<!-- Bottom Telemetry Feed -->
+<div class="h-24 border-t border-outline-variant/20 p-md flex gap-xl relative z-10 overflow-hidden">
+<div class="flex flex-col gap-1 min-w-[200px]">
+<div class="h-[1px] w-full bg-outline-variant/20"></div>
+<span class="text-[9px] text-on-surface-variant/30 uppercase">Stream 01 - Telemetry</span>
+<div class="flex flex-col gap-0.5">
+<div class="flex justify-between text-[10px] text-on-surface-variant/60">
+<span>Buffer</span>
+<span class="text-on-surface">0.02ms</span>
+</div>
+<div class="w-full bg-outline-variant/10 h-0.5 mt-1">
+<div class="bg-primary w-2/3 h-full"></div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-1 flex-grow opacity-40">
+<div class="h-[1px] w-full bg-outline-variant/20"></div>
+<span class="text-[9px] text-on-surface-variant/30 uppercase">Log Events</span>
+<div class="text-[9px] text-on-surface-variant flex flex-col gap-0.5">
+<span>&gt; Connection established at ISO-8601::T12:04:22Z</span>
+<span>&gt; Handshake verified. Encryption layers active.</span>
+<span>&gt; Monitoring signal flow for focused resolution...</span>
+</div>
+</div>
+</div>
+</div></div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-container-lowest border-t border-outline-variant dark:border-outline-variant mt-auto">
+<div class="grid grid-cols-2 md:grid-cols-6 gap-gutter px-margin-safe max-w-[1728px] mx-auto py-xl">
+<div class="col-span-2 md:col-span-2 flex flex-col gap-sm">
+<span class="font-h4 text-h4 font-bold text-on-surface dark:text-on-surface">Romer</span>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-auto">© 2024 Romer Business Operations. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-h4 text-h4 text-on-surface dark:text-on-surface">Product</h4>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Overview</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Features</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-h4 text-h4 text-on-surface dark:text-on-surface">Platform</h4>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Architecture</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Security</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-h4 text-h4 text-on-surface dark:text-on-surface">Company</h4>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">About</a>
+<a class="font-body-md text-body-md text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Careers</a>
+</div>
+<div class="flex flex-col gap-sm">
+<h4 class="font-h4 text-h4 text-on-surface dark:text-on-surface">Legal</h4>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-surface-variant hover:text-primary dark:hover:text-primary transition-colors" href="#">Terms</a>
+</div>
+</div>
+</footer>
+</body></html>

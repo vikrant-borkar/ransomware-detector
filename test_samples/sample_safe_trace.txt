@@ -1,0 +1,33 @@
+﻿# ==============================================================================
+# SAFE SAMPLE (Benign Text Editor & File Reader Workload)
+# ==============================================================================
+# This file represents a benign text editing and document reading workflow.
+# System calls show ordinary file reading, small edits, and metadata checks.
+# Expected detector output: BENIGN (Score < 0.10, Alert: False)
+# ==============================================================================
+
+stat("/home/user/documents/notes.txt", {st_mode=S_IFREG|0644, st_size=4096, ...}) = 0
+openat(AT_FDCWD, "/home/user/documents/notes.txt", O_RDONLY) = 3
+read(3, "Meeting notes: quarterly roadmap discussion...", 4096) = 4096
+read(3, "", 4096) = 0
+close(3) = 0
+
+stat("/home/user/documents/budget.csv", {st_mode=S_IFREG|0644, st_size=8192, ...}) = 0
+openat(AT_FDCWD, "/home/user/documents/budget.csv", O_RDONLY) = 3
+read(3, "Department,Q1,Q2,Q3,Q4\nEngineering,100,120,110,130...", 8192) = 8192
+read(3, "", 8192) = 0
+close(3) = 0
+
+openat(AT_FDCWD, "/home/user/documents/notes.txt", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+write(3, "Meeting notes: updated with review comments.", 44) = 44
+close(3) = 0
+
+stat("/home/user/documents/readme.md", {st_mode=S_IFREG|0644, st_size=1024, ...}) = 0
+openat(AT_FDCWD, "/home/user/documents/readme.md", O_RDONLY) = 3
+read(3, "# Project Documentation\n\nOverview of the project structure...", 1024) = 1024
+close(3) = 0
+
+stat("/home/user/documents/summary.txt", {st_mode=S_IFREG|0644, st_size=512, ...}) = 0
+openat(AT_FDCWD, "/home/user/documents/summary.txt", O_RDONLY) = 3
+read(3, "Summary points: 1, 2, 3...", 512) = 512
+close(3) = 0
