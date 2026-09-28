@@ -128,10 +128,12 @@ app.add_middleware(
 )
 
 
+@app.get("/")
+@app.get("/health")
 @app.get("/api/health")
 def health() -> dict:
     engine = get_engine()
-    return {"ok": True, "version": engine.version}
+    return {"ok": True, "status": "online", "version": engine.version}
 
 
 @app.get("/api/meta")

@@ -1,6 +1,9 @@
-﻿import type { NextConfig } from "next";
+import type { NextConfig } from "next";
 
-const detector = process.env.DETECTOR_URL || "http://127.0.0.1:43124";
+const detector = (process.env.DETECTOR_URL || "http://127.0.0.1:43124")
+  .trim()
+  .replace(/\/api\/?$/i, "")
+  .replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
   async redirects() {
