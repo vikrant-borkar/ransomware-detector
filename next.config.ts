@@ -10,7 +10,22 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/dashboard",
-        destination: "/monitor",
+        destination: "/history",
+        permanent: false,
+      },
+      {
+        source: "/monitor",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/evaluation",
+        destination: "/history",
+        permanent: false,
+      },
+      {
+        source: "/alerts",
+        destination: "/history",
         permanent: false,
       },
     ];
