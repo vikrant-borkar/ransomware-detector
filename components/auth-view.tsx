@@ -23,7 +23,7 @@ export function AuthView() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState<User["role"]>("Security Analyst");
+  const role: User["role"] = "Security Analyst";
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -149,34 +149,19 @@ export function AuthView() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               {mode === "signup" && (
-                <>
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700">Full Name</label>
-                    <div className="relative">
-                      <UserIcon className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                      <input
-                        type="text"
-                        placeholder="e.g. Vikrant Borkar"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm text-slate-900 font-medium"
-                      />
-                    </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700">Full Name</label>
+                  <div className="relative">
+                    <UserIcon className="size-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="e.g. Arun Kumar"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm text-slate-900 font-medium"
+                    />
                   </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-700">Role / Designation</label>
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value as User["role"])}
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white/90 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 text-sm text-slate-900 font-medium"
-                    >
-                      <option value="Security Analyst">Security Analyst</option>
-                      <option value="SOC Operator">SOC Operator</option>
-                      <option value="Threat Researcher">Threat Researcher</option>
-                    </select>
-                  </div>
-                </>
+                </div>
               )}
 
               <div className="space-y-1">

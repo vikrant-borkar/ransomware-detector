@@ -7,7 +7,6 @@ import {
   ShieldAlert,
   ShieldCheck,
   Search,
-  Download,
   Trash2,
   ExternalLink,
   FileText,
@@ -17,7 +16,6 @@ import {
   TrendingUp,
   Lock,
   LogIn,
-  RefreshCw,
 } from "lucide-react";
 import { useHistory, ScanRecord } from "@/lib/history";
 import { useAuth } from "@/lib/auth";
@@ -25,12 +23,11 @@ import { AppHeader } from "@/components/app-header";
 
 export function HistoryBoard() {
   const { user, loaded: authLoaded } = useAuth();
-  const { history, deleteScan, clearHistory, exportCSV, exportJSON, reloadHistory } = useHistory(user?.email);
+  const { history, deleteScan } = useHistory(user?.email);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<"all" | "ransomware" | "benign">("all");
   const [selectedRecord, setSelectedRecord] = useState<ScanRecord | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // If user is guest (not logged in)
   const isGuest = authLoaded && !user;
@@ -102,70 +99,13 @@ export function HistoryBoard() {
         ) : (
           <>
             {/* Page Title Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60 mb-2">
-                  <History className="size-3.5" />
-                  <span>Personal Audit Vault</span>
-                  {user && (
-                    <span className="text-slate-400 font-normal ml-1">
-                      • {user.name} ({user.email})
-                    </span>
-                  )}
-                </div>
-                <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                  Scan <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">History</span>
-                </h1>
-                <p className="text-sm text-slate-600 mt-1 max-w-2xl">
-                  Personal audit records of all files and system call sequences evaluated on your account.
-                </p>
-              </div>
-
-              {/* Action Controls */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <button
-                  onClick={async () => {
-                    setIsRefreshing(true);
-                    await reloadHistory();
-                    setTimeout(() => setIsRefreshing(false), 400);
-                  }}
-                  disabled={isRefreshing}
-                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 border border-slate-200 shadow-xs transition-all cursor-pointer"
-                  title="Sync with cloud database"
-                >
-                  <RefreshCw className={`size-3.5 text-indigo-600 ${isRefreshing ? "animate-spin" : ""}`} />
-                  <span>{isRefreshing ? "Syncing..." : "Sync"}</span>
-                </button>
-                <button
-                  onClick={exportCSV}
-                  disabled={history.length === 0}
-                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 border border-slate-200 shadow-xs transition-all disabled:opacity-40 cursor-pointer"
-                >
-                  <Download className="size-3.5 text-indigo-600" />
-                  <span>Export CSV</span>
-                </button>
-                <button
-                  onClick={exportJSON}
-                  disabled={history.length === 0}
-                  className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 border border-slate-200 shadow-xs transition-all disabled:opacity-40 cursor-pointer"
-                >
-                  <Download className="size-3.5 text-cyan-600" />
-                  <span>Export JSON</span>
-                </button>
-                {history.length > 0 && (
-                  <button
-                    onClick={() => {
-                      if (confirm("Are you sure you want to clear your personal scan history?")) {
-                        clearHistory();
-                      }
-                    }}
-                    className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold flex items-center gap-1.5 border border-rose-200 transition-all cursor-pointer"
-                  >
-                    <Trash2 className="size-3.5 text-rose-500" />
-                    <span>Clear</span>
-                  </button>
-                )}
-              </div>
+            <div>
+              <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                Scan <span className="bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 bg-clip-text text-transparent">History</span>
+              </h1>
+              <p className="text-sm text-slate-600 mt-1 max-w-2xl">
+                Personal audit records of all files and system call sequences evaluated on your account.
+              </p>
             </div>
 
             {/* Summary KPI Cards */}
