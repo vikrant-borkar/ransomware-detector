@@ -1,6 +1,6 @@
-﻿"use client";
+"use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Upload,
   Zap,
@@ -66,6 +66,11 @@ export function LandingPage() {
   const [analysis, setAnalysis] = useState<AnalysisState>(null);
   const [dragActive, setDragActive] = useState(false);
   const [showPasteBox, setShowPasteBox] = useState(false);
+
+  useEffect(() => {
+    // Silently pre-warm the backend if sleeping on free tier
+    api("/api/health").catch(() => {});
+  }, []);
 
   async function analyzeTrace(text: string, fileName = "Pasted Trace") {
     if (!text.trim()) {
