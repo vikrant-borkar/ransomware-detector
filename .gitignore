@@ -52,4 +52,5 @@ __pycache__/
 *RESEARCH_PAPER*
 *.docx
 *.tex
+generate_paper_docx.py
 
