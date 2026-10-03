@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Upload,
   Zap,
@@ -11,10 +12,17 @@ import {
   X,
   ShieldCheck,
   ShieldAlert,
+  History,
+  Radio,
+  ChartBar,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 import { api, pct } from "@/lib/api";
 import { callLabel } from "@/lib/calls";
 import type { Score } from "@/lib/types";
+import { saveScanRecord } from "@/lib/history";
+import { useAuth } from "@/lib/auth";
 
 const SAFE_PRESET = `stat("/home/user/documents/notes.txt", {st_mode=S_IFREG|0644}) = 0
 openat(AT_FDCWD, "/home/user/documents/notes.txt", O_RDONLY) = 3
@@ -60,6 +68,7 @@ type AnalysisState = {
 } | null;
 
 export function LandingPage() {
+  const { user, logout } = useAuth();
   const [inputText, setInputText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +97,22 @@ export function LandingPage() {
         sequence: data.sequence,
         result: data.result,
         fileName,
+      });
+
+      // Automatically persist to scan audit history
+      saveScanRecord({
+        fileName,
+        source: fileName,
+        callsCount: data.sequence.length,
+        label: data.result.label,
+        alert: data.result.alert,
+        score: data.result.score,
+        confidence: data.result.confidence,
+        earlyCall: data.result.early_call,
+        reasons: data.result.reasons,
+        userEmail: user?.email,
+        sequence: data.sequence,
+        fullResult: data.result,
       });
     } catch (err) {
       setAnalysis(null);
@@ -127,12 +152,98 @@ export function LandingPage() {
         <div className="absolute -bottom-20 left-1/3 w-[550px] h-[550px] bg-gradient-to-tr from-pink-400/25 via-rose-300/25 to-amber-300/20 rounded-full blur-[110px]" />
       </div>
 
-      {/* Stylish Left-Aligned Header */}
+      {/* Navigation Header */}
       <header className="w-full border-b border-white/50 bg-white/40 backdrop-blur-2xl shadow-[0_4px_30px_rgba(0,0,0,0.03)] sticky top-0 z-50">
-        <div className="w-full px-6 sm:px-10 h-16 flex items-center justify-start">
-          <span className="font-black text-xl sm:text-2xl tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-600 bg-clip-text text-transparent hover:opacity-90 transition-opacity drop-shadow-2xs">
-            Ransomware <span className="bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">Detector</span>
-          </span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="p-1.5 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+              <ShieldCheck className="size-5" />
+            </div>
+            <span className="font-black text-lg sm:text-xl tracking-tight bg-gradient-to-r from-slate-900 via-indigo-950 to-indigo-600 bg-clip-text text-transparent drop-shadow-2xs">
+              Ransomware <span className="bg-gradient-to-r from-indigo-600 to-cyan-500 bg-clip-text text-transparent">Detector</span>
+            </span>
+          </Link>
+
+          <div className="flex items-center gap-2 sm:gap-4">
+            <nav className="flex items-center gap-1 sm:gap-2">
+              <Link
+                href="/"
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold text-indigo-900 bg-white/80 shadow-xs border border-indigo-100 flex items-center gap-1.5"
+              >
+                <Upload className="size-3.5 text-indigo-600" />
+                <span>Analyzer</span>
+              </Link>
+
+              <Link
+                href="/history"
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-indigo-900 hover:bg-white/60 transition-all flex items-center gap-1.5"
+              >
+                <History className="size-3.5 text-indigo-500" />
+                <span>Scan History</span>
+              </Link>
+
+              <Link
+                href="/monitor"
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-indigo-900 hover:bg-white/60 transition-all hidden sm:flex items-center gap-1.5"
+              >
+                <Radio className="size-3.5 text-indigo-500" />
+                <span>Monitor</span>
+              </Link>
+
+              <Link
+                href="/evaluation"
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-indigo-900 hover:bg-white/60 transition-all hidden md:flex items-center gap-1.5"
+              >
+                <ChartBar className="size-3.5 text-indigo-500" />
+                <span>Evaluation</span>
+              </Link>
+
+              <Link
+                href="/alerts"
+                className="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-700 hover:text-indigo-900 hover:bg-white/60 transition-all hidden md:flex items-center gap-1.5"
+              >
+                <ShieldAlert className="size-3.5 text-amber-500" />
+                <span>Alerts</span>
+              </Link>
+            </nav>
+
+            {/* User Auth Status / Sign In CTA */}
+            <div className="pl-2 sm:pl-3 border-l border-slate-200/80 flex items-center">
+              {user ? (
+                <div className="flex items-center gap-2">
+                  <Link
+                    href="/history"
+                    className="flex items-center gap-2 p-1 pl-2 pr-2.5 rounded-full bg-indigo-50/80 border border-indigo-200/60 hover:bg-indigo-100/80 transition-colors"
+                  >
+                    <div className="size-6 rounded-full bg-gradient-to-tr from-indigo-600 to-cyan-500 text-white font-bold text-[10px] flex items-center justify-center shadow-xs">
+                      {user.avatar || "U"}
+                    </div>
+                    <div className="hidden sm:block text-left">
+                      <p className="text-[11px] font-bold text-indigo-950 leading-tight truncate max-w-[90px]">
+                        {user.name.split(" ")[0]}
+                      </p>
+                    </div>
+                  </Link>
+
+                  <button
+                    onClick={logout}
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                    title="Sign Out"
+                  >
+                    <LogOut className="size-4" />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-bold text-xs shadow-xs flex items-center gap-1.5 transition-all"
+                >
+                  <LogIn className="size-3.5" />
+                  <span>Sign In</span>
+                </Link>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
