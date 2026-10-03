@@ -16,7 +16,7 @@ import { api, pct } from "@/lib/api";
 import { callLabel } from "@/lib/calls";
 import type { Score } from "@/lib/types";
 import { saveScanRecord } from "@/lib/history";
-import { useAuth } from "@/lib/auth";
+import { useAuth, getStoredUser } from "@/lib/auth";
 import { AppHeader } from "@/components/app-header";
 
 const SAFE_PRESET = `stat("/home/user/documents/notes.txt", {st_mode=S_IFREG|0644}) = 0
@@ -95,7 +95,8 @@ export function LandingPage() {
       });
 
       // Automatically persist to scan audit history
-      saveScanRecord({
+      const currentUser = user || getStoredUser();
+      await saveScanRecord({
         fileName,
         source: fileName,
         callsCount: data.sequence.length,
@@ -105,7 +106,7 @@ export function LandingPage() {
         confidence: data.result.confidence,
         earlyCall: data.result.early_call,
         reasons: data.result.reasons,
-        userEmail: user?.email,
+        userEmail: currentUser?.email,
         sequence: data.sequence,
         fullResult: data.result,
       });

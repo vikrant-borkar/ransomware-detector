@@ -17,6 +17,7 @@ import {
   TrendingUp,
   Lock,
   LogIn,
+  RefreshCw,
 } from "lucide-react";
 import { useHistory, ScanRecord } from "@/lib/history";
 import { useAuth } from "@/lib/auth";
@@ -24,11 +25,12 @@ import { AppHeader } from "@/components/app-header";
 
 export function HistoryBoard() {
   const { user, loaded: authLoaded } = useAuth();
-  const { history, deleteScan, clearHistory, exportCSV, exportJSON } = useHistory(user?.email);
+  const { history, deleteScan, clearHistory, exportCSV, exportJSON, reloadHistory } = useHistory(user?.email);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState<"all" | "ransomware" | "benign">("all");
   const [selectedRecord, setSelectedRecord] = useState<ScanRecord | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // If user is guest (not logged in)
   const isGuest = authLoaded && !user;
@@ -121,6 +123,19 @@ export function HistoryBoard() {
 
               {/* Action Controls */}
               <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={async () => {
+                    setIsRefreshing(true);
+                    await reloadHistory();
+                    setTimeout(() => setIsRefreshing(false), 400);
+                  }}
+                  disabled={isRefreshing}
+                  className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold flex items-center gap-1.5 border border-slate-200 shadow-xs transition-all cursor-pointer"
+                  title="Sync with cloud database"
+                >
+                  <RefreshCw className={`size-3.5 text-indigo-600 ${isRefreshing ? "animate-spin" : ""}`} />
+                  <span>{isRefreshing ? "Syncing..." : "Sync"}</span>
+                </button>
                 <button
                   onClick={exportCSV}
                   disabled={history.length === 0}

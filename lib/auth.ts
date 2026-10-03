@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { syncPendingScans } from "@/lib/history";
 
 export type User = {
   id: string;
@@ -8,29 +10,10 @@ export type User = {
   email: string;
   role: "Security Analyst" | "SOC Operator" | "Threat Researcher";
   avatar: string;
-  token: string;
+  token?: string;
 };
 
 const STORAGE_KEY = "brd_auth_user";
-
-export const DEMO_USERS: User[] = [
-  {
-    id: "usr_analyst",
-    name: "Vikrant Borkar",
-    email: "analyst@ghrce.edu",
-    role: "Security Analyst",
-    avatar: "VB",
-    token: "demo_token_analyst_2026",
-  },
-  {
-    id: "usr_lead",
-    name: "Group 5 Lead",
-    email: "group5@ghrce.edu",
-    role: "SOC Operator",
-    avatar: "G5",
-    token: "demo_token_group5_2026",
-  },
-];
 
 export function getStoredUser(): User | null {
   if (typeof window === "undefined") return null;
@@ -58,11 +41,20 @@ export function useAuth() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setUser(getStoredUser());
+    const stored = getStoredUser();
+    setUser(stored);
     setLoaded(true);
 
+    if (stored?.email) {
+      void syncPendingScans(stored.email);
+    }
+
     function handleAuthChange() {
-      setUser(getStoredUser());
+      const u = getStoredUser();
+      setUser(u);
+      if (u?.email) {
+        void syncPendingScans(u.email);
+      }
     }
 
     window.addEventListener("auth_change", handleAuthChange);
@@ -73,24 +65,40 @@ export function useAuth() {
     };
   }, []);
 
-  function login(email: string, name?: string, role?: User["role"]): User {
-    const existing = DEMO_USERS.find((u) => u.email.toLowerCase() === email.toLowerCase());
-    const finalUser: User = existing || {
-      id: `usr_${Date.now()}`,
-      name: name || email.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
-      email,
-      role: role || "Security Analyst",
-      avatar: (name || email).slice(0, 2).toUpperCase(),
-      token: `token_${Date.now()}`,
-    };
-    setStoredUser(finalUser);
-    return finalUser;
+  async function login(email: string, password: string): Promise<User> {
+    const res = await api<{ ok: boolean; user: User }>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email: email.trim(), password }),
+    });
+    if (!res.ok || !res.user) {
+      throw new Error("Failed to authenticate.");
+    }
+    setStoredUser(res.user);
+    await syncPendingScans(res.user.email);
+    return res.user;
   }
 
-  function loginAsDemo(index = 0): User {
-    const demo = DEMO_USERS[index] || DEMO_USERS[0];
-    setStoredUser(demo);
-    return demo;
+  async function signup(
+    email: string,
+    password: string,
+    name?: string,
+    role?: User["role"]
+  ): Promise<User> {
+    const res = await api<{ ok: boolean; user: User }>("/api/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        email: email.trim(),
+        password,
+        name: name?.trim() || "",
+        role: role || "Security Analyst",
+      }),
+    });
+    if (!res.ok || !res.user) {
+      throw new Error("Failed to create account.");
+    }
+    setStoredUser(res.user);
+    await syncPendingScans(res.user.email);
+    return res.user;
   }
 
   function logout(): void {
@@ -102,7 +110,7 @@ export function useAuth() {
     loaded,
     isAuthenticated: !!user,
     login,
-    loginAsDemo,
+    signup,
     logout,
   };
 }

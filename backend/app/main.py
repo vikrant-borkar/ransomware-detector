@@ -8,6 +8,16 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from app.db import (
+    authenticate_user,
+    clear_user_scans,
+    create_user,
+    delete_user_scan,
+    get_user_by_email,
+    get_user_history,
+    init_db,
+    save_user_scan,
+)
 from app.engine import get_engine, samples_payload
 from app.monitor import (
     ALERTS,
@@ -113,8 +123,38 @@ class MonitorRequest(BaseModel):
     scenario: str
 
 
+class SignupRequest(BaseModel):
+    email: str
+    password: str
+    name: str = ""
+    role: str = "Security Analyst"
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class SaveHistoryRequest(BaseModel):
+    id: str | None = None
+    userEmail: str
+    timestamp: str | None = None
+    fileName: str
+    source: str | None = None
+    callsCount: int
+    label: str
+    alert: bool
+    score: float
+    confidence: float
+    earlyCall: int | None = None
+    reasons: list[dict] | None = None
+    sequence: list[str] | None = None
+    fullResult: dict | None = None
+
+
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
+    init_db()
     get_engine()
     yield
 
@@ -155,6 +195,84 @@ def samples() -> dict:
 def scenarios() -> dict:
     return {"scenarios": scenario_catalog()}
 
+
+# --- Authentication Endpoints ---
+
+@app.post("/api/auth/signup")
+def auth_signup(body: SignupRequest) -> dict:
+    if not body.email or "@" not in body.email:
+        raise HTTPException(status_code=400, detail="Invalid email address.")
+    if len(body.password) < 4:
+        raise HTTPException(status_code=400, detail="Password must be at least 4 characters.")
+    try:
+        user = create_user(
+            email=body.email,
+            password=body.password,
+            name=body.name,
+            role=body.role,
+        )
+        return {"ok": True, "user": user}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+
+
+@app.post("/api/auth/login")
+def auth_login(body: LoginRequest) -> dict:
+    if not body.email or "@" not in body.email:
+        raise HTTPException(status_code=400, detail="Invalid email address.")
+    if not body.password:
+        raise HTTPException(status_code=400, detail="Password is required.")
+    try:
+        user = authenticate_user(email=body.email, password=body.password)
+        return {"ok": True, "user": user}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+
+
+@app.get("/api/auth/user")
+def auth_get_user(email: str) -> dict:
+    user = get_user_by_email(email)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found.")
+    return {"ok": True, "user": user}
+
+
+# --- Scan History Endpoints ---
+
+@app.get("/api/history")
+def get_history(userEmail: str) -> dict:
+    if not userEmail:
+        return {"records": []}
+    records = get_user_history(userEmail)
+    return {"records": records}
+
+
+@app.post("/api/history")
+def save_history(body: SaveHistoryRequest) -> dict:
+    try:
+        record = save_user_scan(body.model_dump())
+        return {"ok": True, "record": record}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from None
+
+
+@app.delete("/api/history/{scan_id}")
+def delete_history_item(scan_id: str, userEmail: str) -> dict:
+    if not userEmail:
+        raise HTTPException(status_code=400, detail="userEmail is required.")
+    deleted = delete_user_scan(scan_id, userEmail)
+    return {"ok": deleted}
+
+
+@app.delete("/api/history")
+def clear_history(userEmail: str) -> dict:
+    if not userEmail:
+        raise HTTPException(status_code=400, detail="userEmail is required.")
+    count = clear_user_scans(userEmail)
+    return {"ok": True, "deletedCount": count}
+
+
+# --- Analyzer Endpoints ---
 
 @app.post("/api/analyze")
 def analyze(body: AnalyzeRequest) -> dict:

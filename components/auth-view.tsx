@@ -9,13 +9,15 @@ import {
   User as UserIcon,
   ArrowRight,
   KeyRound,
+  ShieldCheck,
+  CheckCircle2,
 } from "lucide-react";
 import { useAuth, User } from "@/lib/auth";
 import { AppHeader } from "@/components/app-header";
 
 export function AuthView() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
 
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
@@ -23,11 +25,13 @@ export function AuthView() {
   const [name, setName] = useState("");
   const [role, setRole] = useState<User["role"]>("Security Analyst");
   const [error, setError] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setSuccessMsg(null);
 
     if (!email || !email.includes("@")) {
       setError("Please enter a valid email address.");
@@ -39,11 +43,22 @@ export function AuthView() {
     }
 
     setLoading(true);
-    setTimeout(() => {
-      login(email, name || undefined, role);
+    try {
+      if (mode === "signin") {
+        await login(email, password);
+        router.push("/history");
+      } else {
+        await signup(email, password, name, role);
+        setSuccessMsg("Account registered successfully! Redirecting...");
+        setTimeout(() => {
+          router.push("/history");
+        }, 600);
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Authentication failed. Please check your credentials.");
+    } finally {
       setLoading(false);
-      router.push("/history");
-    }, 400);
+    }
   }
 
   return (
@@ -75,8 +90,8 @@ export function AuthView() {
             </h1>
             <p className="text-sm text-slate-600 mt-2 font-medium">
               {mode === "signin"
-                ? "Enter your credentials to access your personal scan history."
-                : "Register a new analyst account to track and audit your scans."}
+                ? "Enter your credentials to access your personal scan history across all devices."
+                : "Register an account to securely save and access your file scan audit records."}
             </p>
           </div>
 
@@ -90,6 +105,7 @@ export function AuthView() {
                 onClick={() => {
                   setMode("signin");
                   setError(null);
+                  setSuccessMsg(null);
                 }}
                 className={`py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   mode === "signin"
@@ -104,6 +120,7 @@ export function AuthView() {
                 onClick={() => {
                   setMode("signup");
                   setError(null);
+                  setSuccessMsg(null);
                 }}
                 className={`py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                   mode === "signup"
@@ -116,9 +133,16 @@ export function AuthView() {
             </div>
 
             {error && (
-              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2">
+              <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
                 <KeyRound className="size-4 shrink-0 text-rose-500" />
                 <span>{error}</span>
+              </div>
+            )}
+
+            {successMsg && (
+              <div className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center gap-2 animate-in fade-in">
+                <CheckCircle2 className="size-4 shrink-0 text-emerald-500" />
+                <span>{successMsg}</span>
               </div>
             )}
 
@@ -200,6 +224,30 @@ export function AuthView() {
                 )}
               </button>
             </form>
+
+            {/* Quick Helper Credentials */}
+            {mode === "signin" && (
+              <div className="mt-5 p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100 text-[11px] text-slate-600 space-y-1">
+                <div className="flex items-center gap-1.5 font-bold text-indigo-900">
+                  <ShieldCheck className="size-3.5 text-indigo-600" />
+                  <span>Default Test Account:</span>
+                </div>
+                <div className="flex items-center justify-between font-mono text-slate-700 bg-white/80 px-2.5 py-1.5 rounded-lg border border-indigo-100/80">
+                  <span>abc@example.com</span>
+                  <span className="text-slate-400">pass: password123</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEmail("abc@example.com");
+                    setPassword("password123");
+                  }}
+                  className="text-[11px] text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer underline pt-0.5"
+                >
+                  Click to auto-fill sample credentials
+                </button>
+              </div>
+            )}
 
             {/* Footer note */}
             <div className="mt-6 pt-5 border-t border-slate-100 text-center">

@@ -42,7 +42,7 @@ if not exist "node_modules" (
 
 REM 5. Launch Backend
 echo [4/4] Starting AI Backend & Web Frontend...
-start "Backend Detector API" cmd /k "cd /d "%~dp0" && backend\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 43124"
+start "Backend Detector API" cmd /k "cd /d "%~dp0" && backend\.venv\Scripts\python.exe -m uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 43124"
 
 REM 6. Launch Frontend
 start "Frontend Web Console" cmd /k "cd /d "%~dp0" && npm run dev"

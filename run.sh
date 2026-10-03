@@ -1,4 +1,4 @@
-﻿#!/bin/bash
+#!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$DIR"
 
@@ -22,7 +22,7 @@ fi
 
 # 3. Start Backend & Frontend
 echo "Starting Backend API on port 43124..."
-backend/.venv/bin/uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 43124 &
+backend/.venv/bin/uvicorn app.main:app --app-dir backend --host 0.0.0.0 --port 43124 &
 BACKEND_PID=$!
 
 echo "Starting Frontend Web Console on port 43123..."
