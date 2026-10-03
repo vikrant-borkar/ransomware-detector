@@ -48,3 +48,8 @@ __pycache__/
 *.py[cod]
 *.db
 
+# research paper files
+*RESEARCH_PAPER*
+*.docx
+*.tex
+
