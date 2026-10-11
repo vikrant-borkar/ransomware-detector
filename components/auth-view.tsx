@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
@@ -13,6 +13,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useAuth, User } from "@/lib/auth";
+import { api } from "@/lib/api";
 import { AppHeader } from "@/components/app-header";
 
 export function AuthView() {
@@ -27,6 +28,11 @@ export function AuthView() {
   const [error, setError] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    // Silently pre-warm the backend when visiting the auth page
+    api("/api/health").catch(() => {});
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
