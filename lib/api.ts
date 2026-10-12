@@ -1,18 +1,19 @@
 export function getApiUrl(path: string): string {
-  // In production browser environments, connect directly to Render to bypass Vercel serverless 10s gateway timeout
   let publicBase = (process.env.NEXT_PUBLIC_DETECTOR_URL || "").trim().replace(/\/api\/?$/i, "").replace(/\/+$/, "");
+  
   if (!publicBase && typeof window !== "undefined") {
     const isLocal =
       window.location.hostname === "localhost" ||
       window.location.hostname === "127.0.0.1" ||
       window.location.hostname.startsWith("192.168.") ||
       window.location.hostname.endsWith(".local");
-    if (!isLocal) {
+    // Only target Render directly if the client is on Vercel, not if already on Render
+    if (!isLocal && !window.location.hostname.includes("ransomware-detector-rl65.onrender.com")) {
       publicBase = "https://ransomware-detector-rl65.onrender.com";
     }
   }
 
-  if (publicBase && typeof window !== "undefined") {
+  if (publicBase && typeof window !== "undefined" && !window.location.origin.includes(publicBase.replace(/^https?:\/\//, ""))) {
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     return `${publicBase}${cleanPath}`;
   }
@@ -33,10 +34,14 @@ function getOfflineErrorMessage(status?: number): string {
     }
   }
 
+  if (status === 508) {
+    return "Render configuration error (Loop Detected): Your Render service is currently running Node.js instead of Python. In Render Settings, change Runtime to Python 3.";
+  }
+
   if (status === 502 || status === 503 || status === 504) {
     return "Render backend is waking up from free-tier sleep (takes ~35–45s). Please wait a moment and try again.";
   }
-  return "Cannot reach the backend server. Please verify your Render service is active and DETECTOR_URL is configured in Vercel.";
+  return "Backend server is sleeping or starting up. If you are on Render free-tier, it takes ~35–45s to wake up. Please wait a moment and try again.";
 }
 
 export async function api<T>(

@@ -1,11 +1,6 @@
 import type { NextConfig } from "next";
 
-const defaultDetector =
-  process.env.NODE_ENV === "production"
-    ? "https://ransomware-detector-rl65.onrender.com"
-    : "http://127.0.0.1:43124";
-
-const detector = (process.env.DETECTOR_URL || defaultDetector)
+const detector = (process.env.DETECTOR_URL || "http://127.0.0.1:43124")
   .trim()
   .replace(/\/api\/?$/i, "")
   .replace(/\/+$/, "");
