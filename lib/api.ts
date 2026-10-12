@@ -1,6 +1,17 @@
 export function getApiUrl(path: string): string {
-  // If NEXT_PUBLIC_DETECTOR_URL is set, connect directly from client to bypass Vercel serverless 10s gateway timeout
-  const publicBase = (process.env.NEXT_PUBLIC_DETECTOR_URL || "").trim().replace(/\/api\/?$/i, "").replace(/\/+$/, "");
+  // In production browser environments, connect directly to Render to bypass Vercel serverless 10s gateway timeout
+  let publicBase = (process.env.NEXT_PUBLIC_DETECTOR_URL || "").trim().replace(/\/api\/?$/i, "").replace(/\/+$/, "");
+  if (!publicBase && typeof window !== "undefined") {
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.startsWith("192.168.") ||
+      window.location.hostname.endsWith(".local");
+    if (!isLocal) {
+      publicBase = "https://ransomware-detector-rl65.onrender.com";
+    }
+  }
+
   if (publicBase && typeof window !== "undefined") {
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     return `${publicBase}${cleanPath}`;
